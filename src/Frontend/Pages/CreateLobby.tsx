@@ -190,12 +190,12 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
   if (errorState) {
     switch (errorState.type) {
       case 'contractLoad':
-        return <CadetWormhole imgUrl='./public/img/wrong-text.png' />;
+        return <CadetWormhole imgUrl='/public/img/wrong-text.png' />;
       case 'invalidAddress':
       case 'invalidContract':
-        return <CadetWormhole imgUrl='./public/img/no-contract-text.png' />;
+        return <CadetWormhole imgUrl='/public/img/no-contract-text.png' />;
       case 'invalidCreate':
-        return <CadetWormhole imgUrl='./public/img/wrong-text.png' />;
+        return <CadetWormhole imgUrl='/public/img/wrong-text.png' />;
       default:
         // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
         const _exhaustive: never = errorState;
