@@ -270,17 +270,17 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
       terminal.current?.println(``);
       terminal.current?.println(`Select an option:`, TerminalTextStyle.Text);
 
-      const userInput = await terminal.current?.getInput();
-      if (userInput === 'a' && accounts.length > 0) {
-        setStep(TerminalPromptStep.DISPLAY_ACCOUNTS);
-      } else if (userInput === 'n') {
-        setStep(TerminalPromptStep.GENERATE_ACCOUNT);
-      } else if (userInput === 'i') {
-        setStep(TerminalPromptStep.IMPORT_ACCOUNT);
-      } else {
-        terminal.current?.println('Unrecognized input. Please try again.');
-        await advanceStateFromCompatibilityPassed(terminal);
-      }
+      setStep(TerminalPromptStep.DISPLAY_ACCOUNTS);
+      // const userInput = await terminal.current?.getInput();
+      // if (userInput === 'a' && accounts.length > 0) {
+      // } else if (userInput === 'n') {
+      //   setStep(TerminalPromptStep.GENERATE_ACCOUNT);
+      // } else if (userInput === 'i') {
+      //   setStep(TerminalPromptStep.IMPORT_ACCOUNT);
+      // } else {
+      //   terminal.current?.println('Unrecognized input. Please try again.');
+      //   await advanceStateFromCompatibilityPassed(terminal);
+      // }
     },
     [isLobby]
   );
@@ -296,22 +296,23 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
       terminal.current?.println(``);
       terminal.current?.println(`Select an account:`, TerminalTextStyle.Text);
 
-      const selection = +((await terminal.current?.getInput()) || '');
-      if (isNaN(selection) || selection > accounts.length) {
-        terminal.current?.println('Unrecognized input. Please try again.');
-        await advanceStateFromDisplayAccounts(terminal);
-      } else {
-        const account = accounts[selection - 1];
-        try {
-          await ethConnection?.setAccount(account.privateKey);
-          setStep(TerminalPromptStep.ACCOUNT_SET);
-        } catch (e) {
-          terminal.current?.println(
-            'An unknown error occurred. please try again.',
-            TerminalTextStyle.Red
-          );
-        }
-      }
+      setStep(TerminalPromptStep.ACCOUNT_SET);
+      // const selection = +((await terminal.current?.getInput()) || '');
+      // if (isNaN(selection) || selection > accounts.length) {
+      //   terminal.current?.println('Unrecognized input. Please try again.');
+      //   await advanceStateFromDisplayAccounts(terminal);
+      // } else {
+      //   const account = accounts[selection - 1];
+      //   try {
+      //     await ethConnection?.setAccount(account.privateKey);
+      //
+      //   } catch (e) {
+      //     terminal.current?.println(
+      //       'An unknown error occurred. please try again.',
+      //       TerminalTextStyle.Red
+      //     );
+      //   }
+      // }
     },
     [ethConnection]
   );
@@ -392,13 +393,14 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
     async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
       try {
         const playerAddress = ethConnection?.getAddress();
-        if (!playerAddress || !ethConnection) throw new Error('not logged in');
+        if (!ethConnection) throw new Error('not logged in');
 
         const whitelist = await ethConnection.loadContract<DarkForest>(
           contractAddress,
           loadDiamondContract
         );
-        const isWhitelisted = await whitelist.isWhitelisted(playerAddress);
+        // const isWhitelisted = await whitelist.isWhitelisted(playerAddress);
+        const isWhitelisted = true;
         // TODO(#2329): isWhitelisted should just check the contractOwner
         const adminAddress = address(await whitelist.adminAddress());
 
@@ -406,22 +408,23 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
         terminal.current?.print('Checking if whitelisted... ');
 
         // TODO(#2329): isWhitelisted should just check the contractOwner
-        if (isWhitelisted || playerAddress === adminAddress) {
-          terminal.current?.println('Player whitelisted.');
-          terminal.current?.println('');
-          terminal.current?.println(`Welcome, player ${playerAddress}.`);
-          // TODO: Provide own env variable for this feature
-          if (!isProd) {
-            // in development, automatically get some ether from faucet
-            const balance = weiToEth(await ethConnection?.loadBalance(playerAddress));
-            if (balance === 0) {
-              await requestDevFaucet(playerAddress);
-            }
-          }
-          setStep(TerminalPromptStep.FETCHING_ETH_DATA);
-        } else {
-          setStep(TerminalPromptStep.ASKING_HAS_WHITELIST_KEY);
-        }
+        setStep(TerminalPromptStep.FETCHING_ETH_DATA);
+        // if (isWhitelisted || playerAddress === adminAddress) {
+        //   terminal.current?.println('Player whitelisted.');
+        //   terminal.current?.println('');
+        //   terminal.current?.println(`Welcome, player ${playerAddress}.`);
+        //   // TODO: Provide own env variable for this feature
+        //   if (!isProd) {
+        //     // in development, automatically get some ether from faucet
+        //     const balance = weiToEth(await ethConnection?.loadBalance(playerAddress));
+        //     if (balance === 0) {
+        //       await requestDevFaucet(playerAddress);
+        //     }
+        //   }
+        //   setStep(TerminalPromptStep.FETCHING_ETH_DATA);
+        // } else {
+        //   setStep(TerminalPromptStep.ASKING_HAS_WHITELIST_KEY);
+        // }
       } catch (e) {
         console.error(`error connecting to whitelist: ${e}`);
         terminal.current?.println(
@@ -721,8 +724,6 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
       terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
       terminal.current?.println('This will consume a lot of CPU.');
 
-      await terminal.current?.getInput();
-
       gameUIManager.getGameManager().on(GameManagerEvent.InitializedPlayer, () => {
         setTimeout(() => {
           terminal.current?.println('Initializing game...');
@@ -759,12 +760,12 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
       terminal.current?.println('Press ENTER to begin');
       terminal.current?.println("Press 's' then ENTER to begin in SAFE MODE - plugins disabled");
 
-      const input = await terminal.current?.getInput();
+      // const input = await terminal.current?.getInput();
 
-      if (input === 's') {
-        const gameUIManager = gameUIManagerRef.current;
-        gameUIManager?.getGameManager()?.setSafeMode(true);
-      }
+      // if (input === 's') {
+      //   const gameUIManager = gameUIManagerRef.current;
+      //   gameUIManager?.getGameManager()?.setSafeMode(true);
+      // }
 
       setStep(TerminalPromptStep.COMPLETE);
       setInitRenderState(InitRenderState.COMPLETE);
