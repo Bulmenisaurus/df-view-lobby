@@ -28,7 +28,7 @@ function App() {
       <GlobalStyle />
       {/* Provides theming for WebComponents from the `@darkforest_eth/ui` package */}
       <Theme color='dark' scale='medium'>
-        <Router>
+        <Router basename={"df-view-lobby"}>
           <Switch>
             <Redirect path='/play' to={`/play/${defaultAddress}`} push={true} exact={true} />
             <Route path='/play/:contract' component={GameLandingPage} />
