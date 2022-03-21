@@ -22,7 +22,6 @@ module.exports = {
   },
 
   // Enable sourcemaps for debugging webpack's output.
-  devtool: 'source-map',
   devServer: {
     port: 8081,
     historyApiFallback: true,
