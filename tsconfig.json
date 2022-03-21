@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "es2020",
-    "outDir": "./dist/",
+    "outDir": "docs",
     "sourceMap": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -14,7 +14,7 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*", "embedded_plugins/*", "plugins/*"],
-  "exclude": ["./node_modules", "./dist", "./declarations"],
+  "exclude": ["./node_modules", "docs", "./declarations"],
   "typedocOptions": {
     "entryPointStrategy": "expand",
     "entryPoints": ["src"],
