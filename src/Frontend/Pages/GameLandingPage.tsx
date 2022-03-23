@@ -254,22 +254,6 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
         terminal.current?.newline();
       }
 
-      const accounts = getAccounts();
-      terminal.current?.println(`Found ${accounts.length} accounts on this device.`);
-      terminal.current?.println(``);
-
-      if (accounts.length > 0) {
-        terminal.current?.print('(a) ', TerminalTextStyle.Sub);
-        terminal.current?.println('Login with existing account.');
-      }
-
-      terminal.current?.print('(n) ', TerminalTextStyle.Sub);
-      terminal.current?.println(`Generate new burner wallet account.`);
-      terminal.current?.print('(i) ', TerminalTextStyle.Sub);
-      terminal.current?.println(`Import private key.`);
-      terminal.current?.println(``);
-      terminal.current?.println(`Select an option:`, TerminalTextStyle.Text);
-
       setStep(TerminalPromptStep.DISPLAY_ACCOUNTS);
       // const userInput = await terminal.current?.getInput();
       // if (userInput === 'a' && accounts.length > 0) {
@@ -287,15 +271,6 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
 
   const advanceStateFromDisplayAccounts = useCallback(
     async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      terminal.current?.println(``);
-      const accounts = getAccounts();
-      for (let i = 0; i < accounts.length; i += 1) {
-        terminal.current?.print(`(${i + 1}): `, TerminalTextStyle.Sub);
-        terminal.current?.println(`${accounts[i].address}`);
-      }
-      terminal.current?.println(``);
-      terminal.current?.println(`Select an account:`, TerminalTextStyle.Text);
-
       setStep(TerminalPromptStep.ACCOUNT_SET);
       // const selection = +((await terminal.current?.getInput()) || '');
       // if (isNaN(selection) || selection > accounts.length) {
@@ -403,9 +378,6 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
         const isWhitelisted = true;
         // TODO(#2329): isWhitelisted should just check the contractOwner
         const adminAddress = address(await whitelist.adminAddress());
-
-        terminal.current?.println('');
-        terminal.current?.print('Checking if whitelisted... ');
 
         // TODO(#2329): isWhitelisted should just check the contractOwner
         setStep(TerminalPromptStep.FETCHING_ETH_DATA);
@@ -710,19 +682,6 @@ export function GameLandingPage({ match }: RouteComponentProps<{ contract: strin
         setStep(TerminalPromptStep.TERMINATED);
         return;
       }
-
-      terminal.current?.newline();
-
-      terminal.current?.println('We collect a minimal set of statistics such as SNARK proving');
-      terminal.current?.println('times and average transaction times across browsers, to help ');
-      terminal.current?.println('us optimize performance and fix bugs. You can opt out of this');
-      terminal.current?.println('in the Settings pane.');
-      terminal.current?.println('');
-
-      terminal.current?.newline();
-
-      terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
-      terminal.current?.println('This will consume a lot of CPU.');
 
       gameUIManager.getGameManager().on(GameManagerEvent.InitializedPlayer, () => {
         setTimeout(() => {
