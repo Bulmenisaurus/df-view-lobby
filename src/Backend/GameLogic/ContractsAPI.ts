@@ -28,7 +28,6 @@ import {
   ArtifactId,
   ArtifactType,
   AutoGasSetting,
-  ContractMethodName,
   DiagnosticUpdater,
   EthAddress,
   LocationId,
@@ -122,8 +121,7 @@ export class ContractsAPI extends EventEmitter {
    */
   private getGasFeeForTransaction(tx: Transaction): AutoGasSetting | string {
     if (
-      (tx.intent.methodName === ContractMethodName.INIT ||
-        tx.intent.methodName === ContractMethodName.GET_SHIPS) &&
+      (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'getSpaceShips') &&
       tx.intent.contract.address === this.contract.address
     ) {
       return '50';
@@ -724,7 +722,10 @@ export class ContractsAPI extends EventEmitter {
         await this.makeCall(this.contract.bulkGetPlanetsExtendedInfoByIds, [
           toLoadPlanets.slice(start, end).map(locationIdToDecStr),
         ]),
-      onProgressMetadata
+      (fractionCompleted) => {
+        if (!onProgressMetadata) return;
+        onProgressMetadata(fractionCompleted / 2);
+      }
     );
 
     const rawPlanetsExtendedInfo2 = await aggregateBulkGetter(
@@ -734,7 +735,10 @@ export class ContractsAPI extends EventEmitter {
         await this.makeCall(this.contract.bulkGetPlanetsExtendedInfo2ByIds, [
           toLoadPlanets.slice(start, end).map(locationIdToDecStr),
         ]),
-      onProgressMetadata
+      (fractionCompleted) => {
+        if (!onProgressMetadata) return;
+        onProgressMetadata(0.5 + fractionCompleted / 2);
+      }
     );
 
     const planets: Map<LocationId, Planet> = new Map();
